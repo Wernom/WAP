@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     /** Touch Events related to the bcStart block **/
     let touchStart = {x: null, y: null};
+if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./ServiceWorker.js');
+};
     document.getElementById("bcStart").addEventListener("touchstart", function(e) {
         touchStart.x = e.changedTouches.item(0).clientX;
         touchStart.y = e.changedTouches.item(0).clientY;
