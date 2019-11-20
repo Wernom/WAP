@@ -1,13 +1,13 @@
 var cacheName = 'js13kPWA-v1';
 var appShellFiles = [
-  	'./js13kpwa/app.js',
-	'./js13kpwa/DecoderWorker.js',
-	'./js13kpwa/exif.js',
-	'./js13kpwa/job.js',
-	'./js13kpwa/icon-cart.png',
-	'./js13kpwa/icon-setup.png',
-	'./js13kpwa/icon-transmit.png',
-	'./js13kpwa/logo.png'
+  	'./js13kpwa/js/app.js',
+	'./js13kpwa/js/DecoderWorker.js',
+	'./js13kpwa/js/exif.js',
+	'./js13kpwa/js/job.js',
+	'./js13kpwa/images/icon-cart.png',
+	'./js13kpwa/images/icon-setup.png',
+	'./js13kpwa/images/icon-transmit.png',
+	'./js13kpwa/images/logo.png'
 ];
 self.addEventListener('install', (e) => {
 
