@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     
     /** Touch Events related to the bcStart block **/
     let touchStart = {x: null, y: null};
-if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./ServiceWorker.js');
-};
     document.getElementById("bcStart").addEventListener("touchstart", function(e) {
         touchStart.x = e.changedTouches.item(0).clientX;
         touchStart.y = e.changedTouches.item(0).clientY;
@@ -121,9 +118,54 @@ if('serviceWorker' in navigator) {
         
         bcSend.innerHTML = "<p>TO DO</p>";
         
+        if (Object.keys(basket.content).length == 0) {
+            bcSend.innerHTML = "<p>Impossible de transmettre un panier vide.</p>";
+        }
+        else if (document.querySelector("#bcParams input:invalid")) {
+            bcSend.innerHTML = "<p>Les paramètres de votre compte sont incorrects.</p><p>Allez à la section \"Réglages\" pour les mettre à jour, et recommencez.</p>";
+        }
+        else {
+            bcSend.innerHTML = "<p>Voulez-vous transmettre vos achats ?</p><p>Votre panier sera envoyé à l'adresse :<br>" + TRANMISSION_URL + "</p><button id='btnTransmit'>Transmettre</button>";   
+        }
+        
+        //let ht = "<p>" + Object.keys(products).map(e => e + ", " + products[e].label + ", " + products[e].price).join("<br>");
+
+        //bcSend.innerHTML = bcSend.innerHTML + ht;
         document.getElementById("radSend").checked = true;
     });
                       
+    document.getElementById("bcSend").addEventListener("click", function(e) {
+        let bcSend = document.getElementById("bcSend");
+        if (e.target.id == "btnTransmit") {
+            bcSend.innerHTML = "<p>Transmission en cours...</p>";
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        let answer = JSON.parse(this.responseText);
+                        if (answer.status === 'ok') {
+                            console.log(answer.basket);
+                            bcSend.innerHTML = "<p>Transmission des achats réalisée avec succès.</p>";
+                            basket.clear();
+                            basket.display();
+                        }
+                        else {
+                            bcSend.innerHTML = "<p>Echec de la transmission des achats.</p><button id='btnTransmit'>Recommencer</button>";
+                        }
+                    }
+                    else {
+                        bcSend.innerHTML = "<p>Connexion impossible au serveur.</p><p>Status code : " + this.status + "</p><p>Vérifiez votre connexion internet et réessayez.</p>";
+                    }
+                }
+            };
+            xhttp.open("POST",TRANMISSION_URL);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            let params = Object.values(basket.content).map(function(e) { return "EAN_" + e.ean + "=" + e.quantity; }).join("&");
+            xhttp.send(params + "&client=" + document.getElementById("userCard").value);
+        }    
+    });
+        
+    
     
     
     
